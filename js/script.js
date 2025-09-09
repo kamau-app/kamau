@@ -119,44 +119,94 @@ backToTopBtn.addEventListener('click', function() {
     });
 });
 
-// QR Code Generation
+// QR Code Generation with Enhanced Styling
 function generateQRCode() {
     const qrCanvas = document.getElementById('qr-canvas');
     if (qrCanvas) {
-        const qr = qrcode(0, 'M');
-        // Google Drive APK download URL
-        const downloadUrl = 'https://drive.google.com/uc?export=download&id=1Kc9bjfujXsoWjBIYG12fTP621Fln4P2_';
-        qr.addData(downloadUrl);
-        qr.make();
-        
-        const cellSize = 4;
-        const margin = 0;
-        const size = qr.getModuleCount() * cellSize + margin * 2;
-        
-        qrCanvas.width = size;
-        qrCanvas.height = size;
-        
-        const ctx = qrCanvas.getContext('2d');
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, size, size);
-        ctx.fillStyle = '#FFFFFF';
-        
-        for (let row = 0; row < qr.getModuleCount(); row++) {
-            for (let col = 0; col < qr.getModuleCount(); col++) {
-                if (qr.isDark(row, col)) {
-                    ctx.fillStyle = '#000000';
-                } else {
-                    ctx.fillStyle = '#FFFFFF';
+        try {
+            const qr = qrcode(0, 'M');
+            // Google Drive APK download URL
+            const downloadUrl = 'https://drive.google.com/file/d/1cBVFafLyS735CTYlzzIkpEPgd5WjZTB1/view?usp=sharing';
+            qr.addData(downloadUrl);
+            qr.make();
+            
+            const cellSize = 5; // Increased for better visibility
+            const margin = 10;
+            const size = qr.getModuleCount() * cellSize + margin * 2;
+            
+            qrCanvas.width = size;
+            qrCanvas.height = size;
+            
+            const ctx = qrCanvas.getContext('2d');
+            
+            // Clear canvas with white background
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, size, size);
+            
+            // Draw QR code modules
+            for (let row = 0; row < qr.getModuleCount(); row++) {
+                for (let col = 0; col < qr.getModuleCount(); col++) {
+                    if (qr.isDark(row, col)) {
+                        ctx.fillStyle = '#000000';
+                        // Add rounded corners to QR modules for better appearance
+                        const x = col * cellSize + margin;
+                        const y = row * cellSize + margin;
+                        const radius = 1;
+                        
+                        ctx.beginPath();
+                        ctx.roundRect(x, y, cellSize, cellSize, radius);
+                        ctx.fill();
+                    }
                 }
-                ctx.fillRect(
-                    col * cellSize + margin,
-                    row * cellSize + margin,
-                    cellSize,
-                    cellSize
-                );
             }
+            
+            console.log('✅ QR Code generated successfully for:', downloadUrl);
+            
+            // Add click event to QR canvas for mobile users
+            qrCanvas.style.cursor = 'pointer';
+            qrCanvas.onclick = function() {
+                window.open(downloadUrl, '_blank');
+                console.log('📱 QR Code clicked - opening download link');
+            };
+            
+        } catch (error) {
+            console.error('❌ Failed to generate QR code:', error);
+            
+            // Fallback: Show a message instead of QR code
+            const ctx = qrCanvas.getContext('2d');
+            qrCanvas.width = 200;
+            qrCanvas.height = 200;
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(0, 0, 200, 200);
+            ctx.fillStyle = '#333';
+            ctx.font = '14px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText('QR Code', 100, 90);
+            ctx.fillText('Unavailable', 100, 110);
+            ctx.fillText('Use Download Button', 100, 130);
         }
     }
+}
+
+// Enhanced CanvasRenderingContext2D.roundRect polyfill for older browsers
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+    CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+        if (radius === 0) {
+            this.rect(x, y, width, height);
+            return;
+        }
+        
+        this.moveTo(x + radius, y);
+        this.lineTo(x + width - radius, y);
+        this.quadraticCurveTo(x + width, y, x + width, y + radius);
+        this.lineTo(x + width, y + height - radius);
+        this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        this.lineTo(x + radius, y + height);
+        this.quadraticCurveTo(x, y + height, x, y + height - radius);
+        this.lineTo(x, y + radius);
+        this.quadraticCurveTo(x, y, x + radius, y);
+        this.closePath();
+    };
 }
 
 // Generate QR code when page loads
@@ -287,9 +337,10 @@ function showDownloadModal() {
         <div style="background: rgba(255, 255, 255, 0.05); padding: 1.5rem; border-radius: 15px; margin-bottom: 1.5rem; text-align: left;">
             <h4 style="color: #667eea; margin-bottom: 1rem;">Installation Steps:</h4>
             <ol style="color: #8892b0; line-height: 1.8;">
-                <li>Download the APK file</li>
-                <li>Go to Settings > Security</li>
-                <li>Enable "Unknown Sources"</li>
+                <li>Click the download link to access Google Drive</li>
+                <li>Click the download button in Google Drive</li>
+                <li>Go to Settings > Security on your device</li>
+                <li>Enable "Unknown Sources" or "Install unknown apps"</li>
                 <li>Open the downloaded APK file</li>
                 <li>Follow installation prompts</li>
             </ol>
@@ -340,7 +391,7 @@ function showDownloadModal() {
     // Download handler
     document.getElementById('download-now-btn').addEventListener('click', function() {
         // Google Drive APK download URL
-        window.open('https://drive.google.com/uc?export=download&id=1Kc9bjfujXsoWjBIYG12fTP621Fln4P2_', '_blank');
+        window.open('https://drive.google.com/file/d/1cBVFafLyS735CTYlzzIkpEPgd5WjZTB1/view?usp=sharing', '_blank');
         
         // Show success message
         modalContent.innerHTML = `
