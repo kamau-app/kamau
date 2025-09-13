@@ -126,7 +126,7 @@ function generateQRCode() {
         try {
             const qr = qrcode(0, 'M');
             // Google Drive APK download URL
-            const downloadUrl = 'https://firebasestorage.googleapis.com/v0/b/earning-app-4e471.firebasestorage.app/o/Kamau.apk?alt=media&token=76afc526-225a-42bf-a2d7-11ab810ac141';
+            const downloadUrl = 'https://firebasestorage.googleapis.com/v0/b/earning-app-4e471.firebasestorage.app/o/kamau.apk?alt=media&token=c59243c8-0e97-4943-a023-22d79322e38f';
             qr.addData(downloadUrl);
             qr.make();
             
@@ -391,7 +391,7 @@ function showDownloadModal() {
     // Download handler
     document.getElementById('download-now-btn').addEventListener('click', function() {
         // Google Drive APK download URL
-        window.open('https://firebasestorage.googleapis.com/v0/b/earning-app-4e471.firebasestorage.app/o/Kamau.apk?alt=media&token=76afc526-225a-42bf-a2d7-11ab810ac141', '_blank');
+        window.open('https://firebasestorage.googleapis.com/v0/b/earning-app-4e471.firebasestorage.app/o/kamau.apk?alt=media&token=c59243c8-0e97-4943-a023-22d79322e38f', '_blank');
         
         // Show success message
         modalContent.innerHTML = `
